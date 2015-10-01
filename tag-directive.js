@@ -22,9 +22,9 @@
                 $scope.showGroup = ($scope.group !== null);
                 $scope.groupCode = $sce.trustAsHtml($scope.group);
                 element.on('dragstart', function (ev) {
-                    omniTagService.dragState = false;
+                    tagService.dragState = false;
                     var tag = angular.toJson($scope.draggableModel);
-                    ev.originalEvent.dataTransfer.setData("Text", tag);
+                    ev.dataTransfer.setData("Text", tag);
                 });
                 element.on('dragend', function (ev) {
                     if (tagService.dragState) {

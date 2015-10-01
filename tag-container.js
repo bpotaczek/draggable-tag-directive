@@ -15,12 +15,12 @@
             },
             link: function ($scope, element, attributes) {
                 element.on('dragover', function (ev) {
-                    ev.originalEvent.dataTransfer.dropEffect = 'copy';
+                    ev.dataTransfer.dropEffect = 'copy';
                     ev.preventDefault();
                 });
                 element.on('drop', function (ev) {
-                    omniTagService.dragState = true;
-                    var data = ev.originalEvent.dataTransfer.getData("Text");
+                    tagService.dragState = true;
+                    var data = ev.dataTransfer.getData("Text");
                     $scope.$apply(function () {
                         var tag = angular.fromJson(data);
                         $scope.tags.push(tag);

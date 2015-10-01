@@ -1,7 +1,51 @@
 (function () {
     'use strict';
 
-    angular.module('tag-directive').directive('draggableTag', ['tagService', '$sce', draggableTag]);
+    angular.module('draggable-tag', [])
+        .factory('tagService', tagService)
+        .directive('draggableTag', ['tagService', '$sce', draggableTag])
+        .directive('tagContainer', ['tagService', tagContainer]);
+
+    function tagService() {
+        return {
+            dragState: false
+        };
+    }
+
+    function tagContainer(tagService) {
+        return {
+            restrict: 'E',
+            templateUrl: 'tag-container.html',
+            scope: {
+                tags: '=ngModel',
+                disabled: '=ngDisabled',
+                keep: '=staticList'
+            },
+            link: function ($scope, element, attributes) {
+                element.on('dragover', function (ev) {
+                    ev.dataTransfer.dropEffect = 'copy';
+                    ev.preventDefault();
+                });
+                element.on('drop', function (ev) {
+                    tagService.dragState = true;
+                    var data = ev.dataTransfer.getData("Text");
+                    $scope.$apply(function () {
+                        var tag = angular.fromJson(data);
+                        $scope.tags.push(tag);
+                    });
+                });
+            },
+            controller: function ($scope) {
+                this.removeTag = function (index) {
+                    if (!$scope.keep) {
+                        $scope.$apply(function () {
+                            $scope.tags.splice(index, 1);
+                        });
+                    }
+                };
+            }
+        };
+    }
 
     function draggableTag(tagService, $sce) {
         return {
